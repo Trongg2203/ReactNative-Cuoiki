@@ -64,8 +64,8 @@ const HomeScreen = ({ navigation }) => {
 
   // Handle search functionality
   const handleSearch = async (query) => {
-    if (query.trim().length < 2) {
-      Alert.alert("Error", "Search query must be at least 2 characters long.");
+    if (query.trim().length < 3) {
+      Alert.alert("Error", "Search query must be at least 3 characters long.");
       return;
     }
     try {
