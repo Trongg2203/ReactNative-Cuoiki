@@ -3,7 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider as PaperProvider, DefaultTheme } from "react-native-paper";
 import HomeScreen from "./src/screens/HomeScreen";
-// import DetailsScreen from "./src/screens/DetailsScreen";
+import DetailsScreen from "./src/screens/DetailsScreen";
+import { StatusBar } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
@@ -11,15 +12,19 @@ const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: "#0288d1", // Blue for headers
-    accent: "#ffca28", // Yellow for accents
-    background: "#e0f7fa", // Light cyan background
+    primary: "#2563eb", // Màu xanh dương tươi sáng (Blue 600)
+    accent: "#f97316", // Màu cam ấm áp (Orange 500)
+    background: "#f1f5f9", // Màu nền xám xanh nhạt (BlueGray 50)    
   },
 };
 
 export default function App() {
   return (
     <PaperProvider theme={theme}>
+      <StatusBar
+        barStyle="light-content" //Chữ trắng, biểu tượng sáng
+        backgroundColor={theme.colors.primary}
+      />
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Home"
@@ -27,12 +32,15 @@ export default function App() {
             headerStyle: {
               backgroundColor: theme.colors.primary,
             },
-            headerTintColor: "#fff",
+            headerTintColor: "#ffffff", // Màu trắng cho các phần tử header
             headerTitleStyle: {
               fontWeight: "600",
               fontSize: 20,
             },
             headerShadowVisible: false,
+            contentStyle: {
+              backgroundColor: theme.colors.background, // Màu nền cho vùng nội dung
+            },
           }}
         >
           <Stack.Screen
