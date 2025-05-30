@@ -48,11 +48,11 @@ export default function App() {
             component={HomeScreen}
             options={{ title: "Latest News" }}
           />
-          {/* <Stack.Screen
+          <Stack.Screen
             name="Details"
             component={DetailsScreen}
             options={{ title: "Article" }}
-          /> */}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
