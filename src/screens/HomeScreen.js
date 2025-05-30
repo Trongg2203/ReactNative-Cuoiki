@@ -19,16 +19,46 @@ const HomeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [canShake, setCanShake] = useState(true);
 
+  // state loading more
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1); // nếu API có trả về
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
   // Fetch top headlines
-  const fetchNews = async () => {
+  const fetchNews = async (pageNumber = 1, isLoadMore = false) => {
     try {
-      setLoading(true);
-      const response = await getTopHeadlines();
-      setArticles(response.articles);
+      if (isLoadMore) {
+        setIsLoadingMore(true);
+      } else {
+        setLoading(true);
+      }
+
+      const response = await getTopHeadlines(pageNumber);
+      const newArticles = response.articles || [];
+
+      if (isLoadMore) {
+        setArticles((prev) => [...prev, ...newArticles]);
+      } else {
+        setArticles(newArticles);
+      }
+
+      setPage(pageNumber);
+      setTotalPages(response.totalPages || 5); // fallback nếu API không trả
     } catch (error) {
       Alert.alert("Error", "Failed to load news. Please try again.");
     } finally {
-      setLoading(false);
+      if (isLoadMore) {
+        setIsLoadingMore(false);
+      } else {
+        setLoading(false);
+      }
+    }
+  };
+
+  // hamg load them
+  const loadMoreArticles = () => {
+    if (!isLoadingMore && page < totalPages) {
+      fetchNews(page + 1, true);
     }
   };
 
@@ -53,19 +83,17 @@ const HomeScreen = ({ navigation }) => {
   const handleRefresh = async () => {
     setRefreshing(true);
     setSearchQuery("");
-    await fetchNews();
+    await fetchNews(1);
     setRefreshing(false);
   };
 
-  // useEffect(() => {
-  //   fetchNews();
-  // }, []);
 
   // Setup shake listener for refresh
   useEffect(() => {
     fetchNews();
     const unsubscribe = setupShakeListener(() => {
       if (canShake) {
+        // Khóa không cho shake tiếp
         setCanShake(false);
         handleRefresh();
         Alert.alert(
@@ -81,7 +109,10 @@ const HomeScreen = ({ navigation }) => {
         );
       }
     });
+    // khi component bị unmount
+    // để gỡ bộ lắng nghe shake
     return () => unsubscribe();
+    // Effect này chỉ chạy lại nếu canShake thay đổi
   }, [canShake]);
 
   // Render each article card with animation
@@ -117,11 +148,31 @@ const HomeScreen = ({ navigation }) => {
       ) : (
         <FlatList
           data={articles}
+          // dinh nghĩa moi item trong danh sách se dc render
           renderItem={renderItem}
+          // key duy nhất
           keyExtractor={(item) => item.url}
+          // kích hoạt icon loading khi kéo để làm mới
           refreshing={refreshing}
+          // kéo để làm mới
           onRefresh={handleRefresh}
+          // keo xuong thì load them data
+          onEndReached={loadMoreArticles}
+          onEndReachedThreshold={0.3}
+          // css cho phan tu ben trong flatlist
           contentContainerStyle={styles.list}
+          // load more
+          ListFooterComponent={
+            isLoadingMore ? (
+              <Animatable.View
+                animation="fadeIn"
+                duration={500}
+                style={styles.footerLoader}>
+                <ActivityIndicator size="small" color="#0288d1" />
+              </Animatable.View>
+            ) : null
+          }
+          // render khi []
           ListEmptyComponent={() => (
             <View style={styles.emptyContainer}>
               <Title style={styles.emptyText}>No articles found</Title>
@@ -165,6 +216,11 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     color: "#666",
+  },
+  footerLoader: {
+    paddingVertical: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

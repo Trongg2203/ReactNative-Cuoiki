@@ -5,7 +5,7 @@ import { Card, Title, Paragraph } from "react-native-paper";
 const NewsCard = ({ article, onPress }) => {
   const { title, description, urlToImage, publishedAt } = article;
 
-  // Format the publication date
+  // Format the publication date follow style MMM DD, YYYY
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "short", day: "numeric" };
     return new Date(dateString).toLocaleDateString("en-US", options);
@@ -43,13 +43,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: 10,
     backgroundColor: "#fff",
-    elevation: 2,
+    elevation: 1,
   },
   image: {
-    width: 100,
-    height: 100,
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
+    width: 388,
+    height: 200,
+    borderRadius:10,
   },
   content: {
     flex: 1,
@@ -71,5 +70,5 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
-
-export default NewsCard;
+// dung memo de dam bao toi uu component khi render vs data lớn
+export default React.memo(NewsCard);

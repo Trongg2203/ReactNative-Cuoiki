@@ -11,7 +11,7 @@ const api = axios.create({
 });
 
 // Fetch top headlines
-export const getTopHeadlines = async (page = 1) => {
+export const getTopHeadlines = async (page) => {
   try {
     const response = await api.get("/top-headlines", {
       params: {
