@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_KEY = "fffcf2b8d2f64352b905695694eaa416"; // Replace with your NewsAPI key
+const API_KEY = "16c5d7cae7fc4ccd814c2d3955111577";
 const BASE_URL = "https://newsapi.org/v2";
 
 const api = axios.create({
@@ -30,8 +30,8 @@ export const getTopHeadlines = async (page = 1) => {
 // Search news by query
 export const searchNews = async (query, page = 1) => {
   try {
-    if (!query || query.trim().length < 2) {
-      throw new Error("Search query must be at least 2 characters long");
+    if (!query || query.trim().length < 3) {
+      throw new Error("Please enter at least 3 characters to search");
     }
     const response = await api.get("/everything", {
       params: {
