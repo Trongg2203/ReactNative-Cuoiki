@@ -17,6 +17,7 @@ const HomeScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshing, setRefreshing] = useState(false);
+  const [canShake, setCanShake] = useState(true);
 
   // Fetch top headlines
   const fetchNews = async () => {
@@ -61,14 +62,27 @@ const HomeScreen = ({ navigation }) => {
   // }, []);
 
   // Setup shake listener for refresh
-    useEffect(() => {
-      fetchNews();
-      const unsubscribe = setupShakeListener(() => {
+  useEffect(() => {
+    fetchNews();
+    const unsubscribe = setupShakeListener(() => {
+      if (canShake) {
+        setCanShake(false);
         handleRefresh();
-        Alert.alert("Shake Detected", "News refreshed!");
-      });
-      return () => unsubscribe();
-    }, []);
+        Alert.alert(
+          "Shake Detected",
+          "News refreshed!",
+          [
+            {
+              text: "OK",
+              onPress: () => setCanShake(true),
+            },
+          ],
+          { cancelable: false }
+        );
+      }
+    });
+    return () => unsubscribe();
+  }, [canShake]);
 
   // Render each article card with animation
   const renderItem = ({ item, index }) => (
