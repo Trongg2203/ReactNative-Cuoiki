@@ -56,15 +56,19 @@ const HomeScreen = ({ navigation }) => {
     setRefreshing(false);
   };
 
+  useEffect(() => {
+    fetchNews();
+  }, []);
+
   // Setup shake listener for refresh
-//   useEffect(() => {
-//     fetchNews();
-//     const unsubscribe = setupShakeListener(() => {
-//       handleRefresh();
-//       Alert.alert("Shake Detected", "News refreshed!");
-//     });
-//     return () => unsubscribe();
-//   }, []);
+  //   useEffect(() => {
+  //     fetchNews();
+  //     const unsubscribe = setupShakeListener(() => {
+  //       handleRefresh();
+  //       Alert.alert("Shake Detected", "News refreshed!");
+  //     });
+  //     return () => unsubscribe();
+  //   }, []);
 
   // Render each article card with animation
   const renderItem = ({ item, index }) => (
